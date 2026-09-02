@@ -1,11 +1,27 @@
 #include <libft.h>
 #include <ft_malloc.h>
 
-// typedef struct s_malloc_data {
-//     t_zone *zones[3]; // zones[0] = tiny, zones[1] = small, zones[2] = large
-// } t_malloc_data;
-
 t_malloc_data g_malloc = {{NULL, NULL, NULL}};
+
+t_block *find_space(int type, size_t size)
+{
+    t_zone  *zone;
+    t_block *block;
+
+    zone = g_malloc.zones[type];
+    while (zone != NULL)
+    {
+        block = zone->blocks;
+        while (block != NULL)
+        {
+            if (block->free == 1 && block->size >= size)
+                return (block);
+            block = block->next;
+        }
+        zone = zone->next;
+    }
+    return (NULL);
+}
 
 t_zone *create_zone(int type, size_t size) {
     #if OS_TYPE == 1
@@ -44,7 +60,6 @@ t_zone *create_zone(int type, size_t size) {
     first_b->prev = NULL;
     first_b->next = NULL;
     zone->blocks = first_b;
-    // printf("%d | %zu\n", zone->type, zone->size);
     zone->next = g_malloc.zones[zone->type];
     g_malloc.zones[zone->type] = zone;
     return (zone);
@@ -62,7 +77,17 @@ int    get_alloc_size(size_t size) {
 
 void    *ft_malloc(size_t size) {
     int type = get_alloc_size(size);
+    t_block *block;
+    if (type != 2) {
+        block = find_space(type, size);
+        if (block != NULL)
+        {
+            block->free = 0;
+            return (block + 1);
+        }
+    }
     t_zone *zone = create_zone(type, size);
+    zone->blocks->free = 0;
     if (zone == NULL)
         return (perror("mmap:"), NULL); 
     return (zone->blocks + 1);
