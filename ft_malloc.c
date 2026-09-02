@@ -14,13 +14,28 @@ t_block *find_space(int type, size_t size)
         block = zone->blocks;
         while (block != NULL)
         {
-            if (block->free == 1 && block->size >= size)
+            if (block->free == 1 && block->size >= (size + 64))
                 return (block);
             block = block->next;
         }
         zone = zone->next;
     }
     return (NULL);
+}
+
+void split_block(t_block *block, size_t size)
+{
+    t_block *new_block;
+
+    new_block = (t_block *)((char *)block + sizeof(t_block) + size);
+    new_block->size = block->size - size - sizeof(t_block);
+    new_block->free = 1;
+    new_block->prev = block;
+    new_block->next = block->next;
+    if (block->next != NULL)
+        block->next->prev = new_block;
+    block->next = new_block;
+    block->size = size;
 }
 
 t_zone *create_zone(int type, size_t size) {
@@ -82,14 +97,16 @@ void    *ft_malloc(size_t size) {
         block = find_space(type, size);
         if (block != NULL)
         {
+            if (block->size >= size + sizeof(t_block) + 1)
+                split_block(block, size);
             block->free = 0;
             return (block + 1);
         }
     }
     t_zone *zone = create_zone(type, size);
-    zone->blocks->free = 0;
     if (zone == NULL)
         return (perror("mmap:"), NULL); 
+    zone->blocks->free = 0;
     return (zone->blocks + 1);
 }
 
