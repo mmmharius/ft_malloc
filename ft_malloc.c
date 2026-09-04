@@ -143,3 +143,22 @@ void    ft_free(void *ptr) {
         }
     }
 }
+
+void *ft_realloc(void *ptr, size_t size) {
+    if (ptr == NULL)
+        return (ft_malloc(size));
+    if (size == 0) {
+        ft_free(ptr);
+        return (NULL);
+    }
+    if (ptr != NULL)
+        t_block *block = ((t_block *)ptr) - 1;
+    if (size > block->size) {
+        
+    }
+    else if (size < block->size) {
+
+    }
+    else
+        return;
+}
