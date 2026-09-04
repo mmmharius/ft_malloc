@@ -19,6 +19,8 @@ void    *malloc(size_t size) {
     t_zone *zone = create_zone(type, size);
     if (zone == NULL)
         return (perror("mmap:"), NULL); 
+    if (zone->blocks->size >= size + sizeof(t_block) + 1)
+        split_block(zone->blocks, size);
     zone->blocks->free = 0;
     return (zone->blocks + 1);
 }
