@@ -1,7 +1,5 @@
 #include <libc.h>
-#include <ft_malloc.h>
-
-t_malloc_data g_malloc = {{NULL, NULL, NULL}};
+#include <malloc.h>
 
 t_block *find_space(int type, size_t size)
 {
@@ -58,10 +56,8 @@ t_zone *create_zone(int type, size_t size) {
     else {
         size_t nbr_page = ((size + sizeof(t_zone) + sizeof(t_block)) + page_size - 1) / page_size;
         size_t size_mmap = nbr_page * page_size;
-        // printf("nbr_page: %zu, size : %zu\n", nbr_page, size);
         ptr = mmap(NULL, size_mmap, PROT_WRITE | PROT_READ, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
         size = size_mmap;
-        // printf("after mmap size : %zu\n", size);
     }
     if (ptr == MAP_FAILED)
         return(NULL);
@@ -87,79 +83,4 @@ int    get_alloc_size(size_t size) {
         return 1;
     else
         return 2;
-}
-
-void    *ft_malloc(size_t size) {
-    int type = get_alloc_size(size);
-    t_block *block;
-    if (type != 2) {
-        block = find_space(type, size);
-        if (block != NULL)
-        {
-            if (block->size >= size + sizeof(t_block) + 1)
-                split_block(block, size);
-            block->free = 0;
-            return (block + 1);
-        }
-    }
-    t_zone *zone = create_zone(type, size);
-    if (zone == NULL)
-        return (perror("mmap:"), NULL); 
-    zone->blocks->free = 0;
-    return (zone->blocks + 1);
-}
-
-void    ft_free(void *ptr) {
-    if (ptr == NULL)
-        return;
-    t_block *block_to_find = ((t_block *)ptr) - 1;
-    t_zone *zone;
-    t_zone *prev_zone;
-    t_block *block;
-    for (int i = 0; i < 3; i++) {
-        prev_zone = NULL;
-        zone = g_malloc.zones[i];
-        while (zone != NULL) {
-            block = zone->blocks;
-            while(block != NULL) {
-                if (block == block_to_find) {
-                    if (zone->type == 2) {
-                        if (prev_zone == NULL)
-                            g_malloc.zones[i] = zone->next;
-                        else
-                            prev_zone->next = zone->next;
-                        munmap(zone, zone->size);
-                        return;
-                    }
-                    else {
-                        block->free = 1;
-                        return;
-                    }
-                }
-                block = block->next;
-            }
-            prev_zone = zone;
-            zone = zone->next;
-        }
-    }
-}
-
-void *ft_realloc(void *ptr, size_t size) {
-    if (ptr == NULL)
-        return (ft_malloc(size));
-    if (size == 0) {
-        ft_free(ptr);
-        return (NULL);
-    }
-    t_block *block = ((t_block *)ptr) - 1;
-    if (size > block->size) {
-        void *adr = ft_malloc(size);
-        void *ret = ft_memcpy(adr, ptr, block->size);
-        ft_free(ptr);
-        return ret;
-    }
-    else if (size < block->size)
-        split_block(block, size);
-    return ptr;
-    printf("test\n");
 }

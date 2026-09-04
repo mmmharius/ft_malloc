@@ -1,6 +1,6 @@
-NAME = ft_malloc
+NAME = malloc
 CC = cc
-SRC = ft_malloc.c
+SRC = utils.c free.c malloc.c realloc.c
 MAIN = main.c
 TEST_NAME = test
 OBJS = $(SRC:.c=.o)

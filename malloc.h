@@ -1,5 +1,5 @@
-#ifndef FT_MALLOC_H
-#define FT_MALLOC_H
+#ifndef MALLOC_H
+#define MALLOC_H
 
 #include <unistd.h>
 #include <sys/mman.h> //mmap
@@ -24,8 +24,12 @@ typedef struct s_malloc_data {
 
 extern t_malloc_data g_malloc;
 
-void    *ft_malloc(size_t size);
-void    ft_free(void *ptr);
-void    *ft_realloc(void *ptr, size_t size);
+void    *malloc(size_t size);
+void    free(void *ptr);
+void    *realloc(void *ptr, size_t size);
+t_block *find_space(int type, size_t size);
+void    split_block(t_block *block, size_t size);
+t_zone  *create_zone(int type, size_t size);
+int     get_alloc_size(size_t size);
 
 #endif
