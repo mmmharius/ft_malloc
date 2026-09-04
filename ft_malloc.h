@@ -26,5 +26,6 @@ typedef struct s_malloc_data {
 extern t_malloc_data g_malloc;
 
 void    *ft_malloc(size_t size);
+void    ft_free(void *ptr);
 
 #endif
