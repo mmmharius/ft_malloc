@@ -1,6 +1,6 @@
 NAME = malloc
 CC = cc
-SRC = utils.c free.c malloc.c realloc.c
+SRC = utils.c free.c malloc.c realloc.c show_alloc.c
 MAIN = main.c
 TEST_NAME = test
 OBJS = $(SRC:.c=.o)
@@ -24,7 +24,7 @@ $(NAME): $(OBJS)
 	$(CC) $(OS_FLAG) -fPIC -I./libc -I. -c $< -o $@
 
 test: libc $(MAIN) $(SRC)
-	$(CC) $(OS_FLAG) -I. -I./libc $(MAIN) $(SRC) -L./libc -lft -o $(TEST_NAME)
+	$(CC) $(OS_FLAG) -I. -I./libc $(MAIN) $(SRC) -L./libc -o $(TEST_NAME)
 
 libc:
 	make -C libc

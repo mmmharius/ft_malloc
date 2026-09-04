@@ -1,7 +1,6 @@
 #ifndef MALLOC_H
 #define MALLOC_H
 
-#include <unistd.h>
 #include <sys/mman.h> //mmap
 
 typedef struct s_block {
@@ -31,5 +30,6 @@ t_block *find_space(int type, size_t size);
 void    split_block(t_block *block, size_t size);
 t_zone  *create_zone(int type, size_t size);
 int     get_alloc_size(size_t size);
+void	show_alloc_mem(void);
 
 #endif

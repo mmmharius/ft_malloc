@@ -1,14 +1,16 @@
-#include <ft_malloc.h>
+#include <malloc.h>
+#include <libc.h>
 
 int main() {
     struct t_block;
 
-    void *tiny = ft_malloc(1);
-    void *small = ft_malloc(700);
-    void *large = ft_malloc(100000);
-    ft_free(tiny);
-    ft_free(small);
-    ft_free(large);
-    ft_free(NULL);
+    void *tiny = malloc(1);
+    void *small = malloc(700);
+    void *large = malloc(100000);
+    show_alloc_mem();
+    free(tiny);
+    free(small);
+    free(large);
+    free(NULL);
     return(0);
 }
