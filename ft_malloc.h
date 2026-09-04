@@ -1,7 +1,6 @@
 #ifndef FT_MALLOC_H
 #define FT_MALLOC_H
 
-#include <stdio.h>
 #include <unistd.h>
 #include <sys/mman.h> //mmap
 
@@ -27,5 +26,6 @@ extern t_malloc_data g_malloc;
 
 void    *ft_malloc(size_t size);
 void    ft_free(void *ptr);
+void    *ft_realloc(void *ptr, size_t size);
 
 #endif

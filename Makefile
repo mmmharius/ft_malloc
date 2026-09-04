@@ -15,28 +15,28 @@ ifeq ($(UNAME), Darwin)
     OS_FLAG = -DOS_TYPE=2
 endif
 
-all: libft $(NAME)
+all: libc $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) -shared -o $(NAME) $(OBJS) -L./42_libft -lft
+	$(CC) -shared -o $(NAME) $(OBJS) -L./libc
 
 %.o: %.c
-	$(CC) $(OS_FLAG) -fPIC -I./42_libft -I. -c $< -o $@
+	$(CC) $(OS_FLAG) -fPIC -I./libc -I. -c $< -o $@
 
-test: libft $(MAIN) $(SRC)
-	$(CC) $(OS_FLAG) -I. -I./42_libft $(MAIN) $(SRC) -L./42_libft -lft -o $(TEST_NAME)
+test: libc $(MAIN) $(SRC)
+	$(CC) $(OS_FLAG) -I. -I./libc $(MAIN) $(SRC) -L./libc -lft -o $(TEST_NAME)
 
-libft:
-	make -C 42_libft
+libc:
+	make -C libc
 
 clean:
-	make -C 42_libft clean
+	make -C libc clean
 	rm -rf $(OBJS)
 
 fclean:
-	make -C 42_libft fclean
+	make -C libc fclean
 	rm -rf $(OBJS) $(NAME) $(TEST_NAME)
 
 re: clean all
 
-.PHONY: all clean fclean re test libft
+.PHONY: all clean fclean re test libc

@@ -1,4 +1,4 @@
-#include <libft.h>
+#include <libc.h>
 #include <ft_malloc.h>
 
 t_malloc_data g_malloc = {{NULL, NULL, NULL}};
@@ -151,14 +151,15 @@ void *ft_realloc(void *ptr, size_t size) {
         ft_free(ptr);
         return (NULL);
     }
-    if (ptr != NULL)
-        t_block *block = ((t_block *)ptr) - 1;
+    t_block *block = ((t_block *)ptr) - 1;
     if (size > block->size) {
-        
+        void *adr = ft_malloc(size);
+        void *ret = ft_memcpy(adr, ptr, block->size);
+        ft_free(ptr);
+        return ret;
     }
-    else if (size < block->size) {
-
-    }
-    else
-        return;
+    else if (size < block->size)
+        split_block(block, size);
+    return ptr;
+    printf("test\n");
 }
