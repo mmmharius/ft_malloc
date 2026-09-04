@@ -18,13 +18,13 @@ endif
 all: libc $(NAME)
 
 $(NAME): $(OBJS)
-	$(CC) -shared -o $(NAME) $(OBJS) -L./libc
+	$(CC) -shared -o $(NAME) $(OBJS) ./libc/libc.a
 
 %.o: %.c
 	$(CC) $(OS_FLAG) -fPIC -I./libc -I. -c $< -o $@
 
 test: libc $(MAIN) $(SRC)
-	$(CC) $(OS_FLAG) -I. -I./libc $(MAIN) $(SRC) -L./libc -o $(TEST_NAME)
+	$(CC) $(OS_FLAG) -I. -I./libc $(MAIN) $(SRC) ./libc/libc.a -o $(TEST_NAME)
 
 libc:
 	make -C libc
