@@ -44,7 +44,7 @@ void	show_alloc_mem(void)
             for (block = arr[i]->blocks; block != NULL; block = block->next) {
                 if (!block->free)
 				{
-					ft_printf("%p - %p :", (void *)(block + 1), (void *)((char *)(block + 1) + block->size));
+					ft_printf("%p - %p : ", (void *)(block + 1), (void *)((char *)(block + 1) + block->size));
                     ft_putnbr_fd((int)block->size, 1);
                     write(1, " bytes\n", 7);
 					total += block->size;
@@ -52,7 +52,7 @@ void	show_alloc_mem(void)
             }
         }
     }
-    ft_printf("Total :"); 
+    ft_printf("Total : "); 
     ft_putnbr_fd((int)total, 1);
 	ft_printf(" bytes\n");
 }
