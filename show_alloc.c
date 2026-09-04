@@ -11,26 +11,17 @@ static int	count_zones(t_zone *z)
 
 static void	sort_adr(t_zone **arr, int n)
 {
-	int		i;
-	int		j;
 	t_zone	*tmp;
-
-	i = 0;
-	while (i < n)
-	{
-		j = i + 1;
-		while (j < n)
-		{
-			if (arr[j] < arr[i])
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] < arr[i])
 			{
 				tmp = arr[i];
 				arr[i] = arr[j];
 				arr[j] = tmp;
 			}
-			j++;
-		}
-		i++;
-	}
+        }
+    }
 }
 
 void	show_alloc_mem(void)
@@ -38,45 +29,29 @@ void	show_alloc_mem(void)
 	t_zone	*arr[128];
 	t_zone	*z;
 	t_block	*block;
-	size_t	total;
-	int		n;
-	int		i;
+	size_t	total = 0;
+	int		n, i;
 	char	*labels[3] = {"TINY", "SMALL", "LARGE"};
-	int		type;
 
-	total = 0;
-	type = 0;
-	while (type < 3)
-	{
-		n = count_zones(g_malloc.zones[type]);
-		i = 0;
-		z = g_malloc.zones[type];
-		while (z)
-		{
-			arr[i++] = z;
-			z = z->next;
-		}
-		sort_adr(arr, n);
-		i = 0;
-		while (i < n)
-		{
-			ft_printf("%s : %p\n", labels[type], (void *)arr[i]);
-			block = arr[i]->blocks;
-			while (block)
-			{
-				if (!block->free)
+    for (int type = 0; type < 3; type++) {
+        n = count_zones(g_malloc.zones[type]);
+        i = 0;
+        for (z = g_malloc.zones[type]; z != NULL; z = z->next, i++)
+            arr[i] = z;
+        sort_adr(arr, n);
+        for (i = 0; i < n; i++) {
+            ft_printf("%s : %p\n", labels[type], (void *)arr[i]);
+            for (block = arr[i]->blocks; block != NULL; block = block->next) {
+                if (!block->free)
 				{
 					ft_printf("%p - %p :", (void *)(block + 1), (void *)((char *)(block + 1) + block->size));
                     ft_putnbr_fd((int)block->size, 1);
                     write(1, " bytes\n", 7);
 					total += block->size;
 				}
-				block = block->next;
-			}
-			i++;
-		}
-		type++;
-	}
+            }
+        }
+    }
     ft_printf("Total :"); 
     ft_putnbr_fd((int)total, 1);
 	ft_printf(" bytes\n");
